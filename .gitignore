@@ -1,7 +1,6 @@
 *.swp
 .direnv/
 .envrc
-settings.py
 *.log
 *.pot
 *.pyc
