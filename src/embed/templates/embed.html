@@ -1,0 +1,20 @@
+{% load static %}
+
+<html>
+  <body>
+    <style>
+      svg.Diagram {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+    <style>
+      {{highlight_style |safe}}
+    </style>
+
+    {{svg_data |safe}}
+
+    <script src="{% static 'embed/svg-pan-zoom.min.js' %}"></script>
+    <script>svgPanZoom("svg")</script>
+  </body>
+</html>

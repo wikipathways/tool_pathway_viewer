@@ -14,8 +14,16 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
+from redirect import views
+
+# https://www.wikipathways.org/wpi/PathwayWidget.php?id=WP528&xref[]=10400,Entrez Gene&xref[]=62-49-7,CAS&xref[]=1119,Entrez Gene&colors=green,red,blue
+# https://pathway-viewer.toolforge.org/?id=WP528&lightgreen=Entrez_Gene_10400&pink=CAS_62-49-7&lightblue=Entrez_Gene_1119
 
 urlpatterns = [
+    path('', views.index_and_old_toolforge_url),
+    path('PathwayWidget.php', views.old_pathway_widget_php),
+    path('embed/', include('embed.urls')),
+    path('simolecule/', views.simolecule, name='simolecule'),
     path('admin/', admin.site.urls),
 ]
