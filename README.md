@@ -69,9 +69,10 @@ python manage.py check --deploy
 
 Exit out of webservice shell when done.
 
-If you need to stop the webservice:
+Use the following commands to control the web server:
+
 ```
-webservice --backend=kubernetes stop
+webservice --backend=kubernetes python3.7 status/start/stop/restart
 ```
 
 ## How Initially Generated
