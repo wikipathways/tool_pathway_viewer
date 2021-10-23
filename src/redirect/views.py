@@ -23,6 +23,9 @@ HEXADECIMAL_RE = re.compile(r"^[0-9a-fA-F]+$")
 # This is just a proxy for simolecule. The tools.wmflabs.org server security settings don't
 # allow loading content from another domain name, so this proxy is needed to allow
 # for loading the metabolite structure SVGs from the simolecule.com domain.
+#
+# TODO: can I handle this by adding www.simolecule.com to ALLOWED_HOSTS in settings.py?
+# If so, we wouldn't need this proxy.
 def simolecule(request):
     simolecule_base = "https://www.simolecule.com/cdkdepict/depict/bow/svg"
     param_string = "?" + request.GET.urlencode()
@@ -33,17 +36,27 @@ def simolecule(request):
 
 def index_and_old_toolforge_url(request):
     wpid = request.GET.get('id', '')
+
+    if not wpid:
+        # show the help page
+        return redirect('/embed/')
+
     if not WPRE.match(wpid):
         return HttpResponse("<html><body><p>Invalid id - must be of format WP554</p></body></html>")
 
-    updated = request.GET.copy()
+    params_except_id = request.GET.copy()
     # remove 'id' param
     try:
-        del updated['id']
+        del params_except_id['id']
     except KeyError:
         pass
 
-    return redirect('/embed/' + wpid + "?" + updated.urlencode())
+    params_str = params_except_id.urlencode()
+    if params_str:
+        params_str = "?" + params_str
+
+    return redirect('/embed/' + wpid + params_str)
+
 
 def old_pathway_widget_php(request):
     wpid = request.GET.get('id')

@@ -3,9 +3,10 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from pathlib import Path
 import re
-import webcolors
 import requests
+import webcolors
 
 
 #if settings.DEBUG:
@@ -32,11 +33,17 @@ def embed(request, wpid):
     if not wpid:
         # the path in ../tool_pathway_viewer/urls.py should make it impossible to get here
         return HttpResponse('<html><body><p>WikiPathways ID required. Example: "/embed/WP554"</p></body></html>')
-    elif not WPRE.fullmatch(wpid):
+
+    if not WPRE.fullmatch(wpid):
         return HttpResponse('<html><body><p>Invalid WikiPathways ID. Must must be of format WP + number, e.g., WP554</p></body></html>')
       
-    # TODO: convert the old revisions and then support the "rev" query param
-    with open(SVG_DIR + "/" + wpid + theme_filename_part + '.svg') as file:
+    # TODO: should we convert the old revisions and then support the "rev" query param?
+    svg_f = Path(SVG_DIR + "/" + wpid + theme_filename_part + '.svg')
+
+    if not svg_f.exists():
+        return HttpResponse('<html><body><p>No SVG available for ' + wpid + '</p></body></html>')
+
+    with svg_f.open() as file:
         svg_data = file.read()
         highlight_style = ''
         for key, value in request.GET.items():
