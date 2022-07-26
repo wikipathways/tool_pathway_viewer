@@ -12,8 +12,6 @@ import webcolors
 #if settings.DEBUG:
 #    print("debugging mode...")
 
-SVG_DIR=settings.SVG_DIR
-
 CSS3_NAMES_TO_HEX = webcolors.CSS3_NAMES_TO_HEX
 THEME_FILENAME_PARTS_BY_THEME = dict(plain='', dark='.dark')
 
