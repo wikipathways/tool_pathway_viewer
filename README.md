@@ -2,7 +2,7 @@
 
 ## Install
 
-### Dev
+### For Development
 
 **First time only**:
 ```
@@ -36,10 +36,9 @@ ssh -L 8000:localhost:8000 -N <remote-machine-address>
 
 Then visit http://localhost:8000
 
-### Production (on ToolForge)
+### For Production on ToolForge
 
-https://wikitech.wikimedia.org/wiki/Help:Toolforge/Web/Python#Deploying_a_Django_application
-https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/#secret-key
+Refer to the ToolForge docs for [Deploying a Django application](https://wikitech.wikimedia.org/wiki/Help:Toolforge/Web/Python#Deploying_a_Django_application).
 
 ```
 webservice --backend=kubernetes python3.7 shell
@@ -53,7 +52,7 @@ cp "$HOME"/www/python/src/tool_pathway_viewer/local_settings.py.template "$HOME"
 chmod o-rwx "$HOME"/www/python/src/tool_pathway_viewer/local_settings.py
 ```
 
-Edit `local_settings.py` as appropriate, e.g., specify `SECRET_KEY`.
+Edit `local_settings.py` as appropriate, e.g., specify `SECRET_KEY` ([ToolForge docs on secret keys](https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/#secret-key)).
 
 Also, check `www/python/uwsgi.ini`. It probably doesn't need to be changed, but check anyway.
 
@@ -77,7 +76,21 @@ For reference, here are all the commands for controlling the web server:
 webservice --backend=kubernetes python3.7 status/start/stop/restart
 ```
 
-## How Initially Generated
+If you need to restart the server:
+
+```
+webservice --backend=kubernetes python3.7 restart
+```
+
+To edit Python dependencies:
+
+```
+webservice --backend=kubernetes python3.7 shell
+source ~/www/python/venv/bin/activate
+pip 
+```
+
+## How This Was Initially Generated
 
 The configuration must follow the [Wikitech guidelines](https://wikitech.wikimedia.org/wiki/Help:Toolforge/Web/Python).
 
