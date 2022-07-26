@@ -1,26 +1,67 @@
-<html><body>
+<html>
+  <body>
+    <div style="padding: 10px;">
+      <h1>Embed a Pathway</h1>
+      <p>Copy any of the examples below to embed a WikiPathways pathway into your own site.</p>
 
-    <div>
-      <h2>Mapped Identifiers</h2>
-      <p>Pathway WP528 uses Entrez Gene (NCBIGene) for identifiers, but with the pathway viewer on Toolforge (in beta), you can highlight using Ensembl identifiers:</p>
+      <h2>Basic</h2>
+      <p>Just embed a pathway:</p>
       <pre>
         <code>
           &lt;iframe
-            src="https://pathway-viewer.toolforge.org/?id=WP528&amp;yellow=Ensembl_ENSG00000110721,Ensembl_ENSG00000161217"
+            src="https://pathway-viewer.toolforge.org/embed/WP528"
             width="600px"
             height="300px"
             style="overflow:hidden;"&gt;
           &lt;/iframe&gt;
-        <code>
-      <pre>
+        </code>
+      </pre>
       <iframe
-        src="https://pathway-viewer.toolforge.org/?id=WP528&yellow=Ensembl_ENSG00000110721,Ensembl_ENSG00000161217"
-        width="600px"
-        height="300px"
-        style="overflow:hidden;">
+          src="https://pathway-viewer.toolforge.org/embed/WP528"
+          width="600px"
+          height="300px"
+          style="overflow:hidden;">
+      </iframe>
+
+      <h2>Highlight Nodes</h2>
+      <p>You can highlight by identifier or by node text. Specify a recognized CSS color or hex code followed by the identifier or node text.</p>
+      <pre>
+        <code>
+          &lt;iframe
+            src="https://pathway-viewer.toolforge.org/embed/WP528?lightgreen=Entrez_Gene_10400&amp;pink=CAS_62-49-7&amp;lightblue=Entrez_Gene_1119"
+            width="600px"
+            height="300px"
+            style="overflow:hidden;"&gt;
+          &lt;/iframe&gt;
+        </code>
+      </pre>
+      <iframe
+          src="https://pathway-viewer.toolforge.org/embed/WP528?lightgreen=Entrez_Gene_10400&pink=CAS_62-49-7&lightblue=Entrez_Gene_1119"
+          width="600px"
+          height="300px"
+          style="overflow:hidden;">
+      </iframe>
+
+      <h2>Mapped Identifiers</h2>
+      <p>Pathway WP528 uses Entrez Gene (NCBIGene) for identifiers, but you can highlight using Ensembl identifiers if you prefer:</p>
+      <pre>
+        <code>
+          &lt;iframe
+            src="https://pathway-viewer.toolforge.org/embed/WP528&amp;yellow=Ensembl_ENSG00000110721,Ensembl_ENSG00000161217"
+            width="600px"
+            height="300px"
+            style="overflow:hidden;"&gt;
+          &lt;/iframe&gt;
+        </code>
+      </pre>
+      <iframe
+          src="https://pathway-viewer.toolforge.org/embed/WP528&yellow=Ensembl_ENSG00000110721,Ensembl_ENSG00000161217"
+          width="600px"
+          height="300px"
+          style="overflow:hidden;">
       </iframe>
     </div>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-
-</body></html>
+  </body>
+</html>
