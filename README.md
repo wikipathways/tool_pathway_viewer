@@ -14,7 +14,7 @@ pip install -r requirements.txt
 Doublecheck where exactly `local_settings.py.txt` is located.
 
 ```
-mv "$HOME"/www/python/src/tool_pathway_viewer/local_settings.py.txt "$HOME"/www/python/src/tool_pathway_viewer/local_settings.py
+cp "$HOME"/www/python/src/tool_pathway_viewer/local_settings.py.txt "$HOME"/www/python/src/tool_pathway_viewer/local_settings.py
 chmod o-r "$HOME"/www/python/src/tool_pathway_viewer/local_settings.py
 ```
 
