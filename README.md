@@ -11,15 +11,14 @@ cd tool_pathway_viewer
 pip install -r requirements.txt
 ```
 
-Doublecheck where exactly `local_settings.py.template` is located.
+Doublecheck where exactly `local_settings.py.txt` is located.
 
 ```
-cp "$HOME"/www/python/src/tool_pathway_viewer/local_settings.py.template "$HOME"/www/python/src/tool_pathway_viewer/local_settings.py.
+mv "$HOME"/www/python/src/tool_pathway_viewer/local_settings.py.txt "$HOME"/www/python/src/tool_pathway_viewer/local_settings.py
 chmod o-r "$HOME"/www/python/src/tool_pathway_viewer/local_settings.py
 ```
 
 Edit `local_settings.py` as appropriate.
-Download a collection of sample SVGs to a local directory. If it's not where `local_settings.py` says it is, update as appropriate.
 
 **Every time**:
 
@@ -48,7 +47,7 @@ python3 -m venv "$HOME"/www/python/venv
 source "$HOME"/www/python/venv/bin/activate
 pip install --upgrade pip wheel
 pip install -r "$HOME"/www/python/requirements.txt
-cp "$HOME"/www/python/src/tool_pathway_viewer/local_settings.py.template "$HOME"/www/python/src/tool_pathway_viewer/local_settings.py
+cp "$HOME"/www/python/src/tool_pathway_viewer/local_settings.py.txt "$HOME"/www/python/src/tool_pathway_viewer/local_settings.py
 chmod o-rwx "$HOME"/www/python/src/tool_pathway_viewer/local_settings.py
 ```
 
@@ -73,21 +72,10 @@ webservice --backend=kubernetes python3.7 start
 For reference, here are all the commands for controlling the web server:
 
 ```
-webservice --backend=kubernetes python3.7 status/start/stop/restart
-```
-
-If you need to restart the server:
-
-```
+webservice --backend=kubernetes python3.7 status
+webservice --backend=kubernetes python3.7 start
+webservice --backend=kubernetes python3.7 stop
 webservice --backend=kubernetes python3.7 restart
-```
-
-To edit Python dependencies:
-
-```
-webservice --backend=kubernetes python3.7 shell
-source ~/www/python/venv/bin/activate
-pip 
 ```
 
 ## How This Was Initially Generated
