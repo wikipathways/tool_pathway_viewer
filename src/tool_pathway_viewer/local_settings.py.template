@@ -16,6 +16,3 @@ ALLOWED_HOSTS = [
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SECURE_SSL_REDIRECT = True
-
-# on ToolForge
-SVG_DIR="/data/project/wikipathways2wiki/www/js/public/"
