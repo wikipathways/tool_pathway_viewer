@@ -2,6 +2,7 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
+from django.views.decorators.clickjacking import xframe_options_exempt
 from django.urls import reverse
 from pathlib import Path
 import re
@@ -20,6 +21,8 @@ WPRE = re.compile(r"^WP\d+$")
 HEXADECIMAL_RE = re.compile(r"^[0-9a-fA-F]+$")
 
 
+# decorator needed to allow external iframes to use it
+@xframe_options_exempt
 def embed(request, wpid):
     theme_filename_part = ''
     theme = request.GET.get('theme', 'plain')
