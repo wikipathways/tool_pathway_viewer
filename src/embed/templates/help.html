@@ -24,11 +24,11 @@
       </iframe>
 
       <h2>Highlight Nodes</h2>
-      <p>You can highlight by identifier or by node text. Specify a recognized CSS color or hex code followed by the identifier or node text.</p>
+      <p>You can highlight by identifier (Entrez_Gene, Ensembl, ChEBI, HMDB or Wikidata) or by node label. Specify a recognized CSS color name or hex value followed by the identifier or node text. If you want multiple identifiers for one color, separate with commas.</p>
       <pre>
         <code>
           &lt;iframe
-            src="https://pathway-viewer.toolforge.org/embed/WP528?lightgreen=Entrez_Gene_10400&amp;pink=CAS_62-49-7&amp;lightblue=Entrez_Gene_1119"
+            src="https://pathway-viewer.toolforge.org/embed/WP528?lightgreen=Entrez_Gene_10400,Entrez_Gene_1119&amp;ff000080=HMDB_HMDB0000097&amp;0000ff80=CHKA"
             width="600px"
             height="300px"
             style="overflow:hidden;"&gt;
@@ -36,14 +36,14 @@
         </code>
       </pre>
       <iframe
-          src="https://pathway-viewer.toolforge.org/embed/WP528?lightgreen=Entrez_Gene_10400&pink=CAS_62-49-7&lightblue=Entrez_Gene_1119"
+          src="https://pathway-viewer.toolforge.org/embed/WP528?lightgreen=Entrez_Gene_10400,Entrez_Gene_1119&ff000080=HMDB_HMDB0000097&0000ff80=CHKA"
           width="600px"
           height="300px"
           style="overflow:hidden;">
       </iframe>
 
       <h2>Mapped Identifiers</h2>
-      <p>Pathway WP528 uses Entrez Gene (NCBIGene) for identifiers, but you can highlight using Ensembl identifiers if you prefer:</p>
+    <p>We map all identifiers to the those in the list above, so you can feel free to use whichever ones you prefer. For example the authors of pathway WP528 specified Entrez Gene (NCBIGene) identifiers, but you can highlight with Ensembl:</p>
       <pre>
         <code>
           &lt;iframe
