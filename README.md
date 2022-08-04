@@ -95,9 +95,12 @@ ssh tools-login.wmflabs.org
 become pathway-viewer
 cd "$HOME"/www/python
 git pull
+webservice --backend=kubernetes python3.7 shell
+source "$HOME"/www/python/venv/bin/activate
 cd "$HOME"/www/python/src
 python manage.py collectstatic
 python manage.py check --deploy
+exit
 webservice --backend=kubernetes python3.7 restart
 ```
 
