@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.urls import reverse
@@ -77,6 +77,7 @@ def embed(request, wpid):
     )
 
 def help(request):
-    return render(
-            request, "help.html"
-    )
+    return redirect('https://new.wikipathways.org/help.html')
+#    return render(
+#            request, "help.html"
+#    )

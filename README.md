@@ -35,9 +35,19 @@ ssh -L 8000:localhost:8000 -N <remote-machine-address>
 
 Then visit http://localhost:8000
 
-### For Production on ToolForge
+### For Production on Toolforge
 
-Refer to the ToolForge docs for [Deploying a Django application](https://wikitech.wikimedia.org/wiki/Help:Toolforge/Web/Python#Deploying_a_Django_application).
+Refer to the Toolforge docs for [Deploying a Django application](https://wikitech.wikimedia.org/wiki/Help:Toolforge/Web/Python#Deploying_a_Django_application).
+
+Access the [tool on Toolforge](https://toolsadmin.wikimedia.org/tools/id/pathway-viewer):
+
+```
+ssh tools-login.wmflabs.org
+become pathway-viewer
+ls -lisha "$HOME"/www/python
+```
+
+Set it up the first time:
 
 ```
 webservice --backend=kubernetes python3.7 shell
@@ -51,7 +61,7 @@ cp "$HOME"/www/python/src/tool_pathway_viewer/local_settings.py.txt "$HOME"/www/
 chmod o-rwx "$HOME"/www/python/src/tool_pathway_viewer/local_settings.py
 ```
 
-Edit `local_settings.py` as appropriate, e.g., specify `SECRET_KEY` ([ToolForge docs on secret keys](https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/#secret-key)).
+Edit `local_settings.py` as appropriate, e.g., specify `SECRET_KEY` ([Toolforge docs on secret keys](https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/#secret-key)).
 
 Also, check `www/python/uwsgi.ini`. It probably doesn't need to be changed, but check anyway.
 
@@ -78,11 +88,22 @@ webservice --backend=kubernetes python3.7 stop
 webservice --backend=kubernetes python3.7 restart
 ```
 
+If you just make a minor change to a file and push the change to the [GitHub repo](https://github.com/wikipathways/tool_pathway_viewer), you can probably deploy that change on Toolforge with just a subset of the commands above, e.g.:
+
+```
+ssh tools-login.wmflabs.org
+become pathway-viewer
+cd "$HOME"/www/python
+git pull
+cd "$HOME"/www/python/src
+python manage.py collectstatic
+python manage.py check --deploy
+webservice --backend=kubernetes python3.7 restart
+```
+
 ## How This Was Initially Generated
 
-The configuration must follow the [Wikitech guidelines](https://wikitech.wikimedia.org/wiki/Help:Toolforge/Web/Python).
-
-This is how this was all initially set up.
+You probably don't need this, but just in case, here's how this configuration was initially setup to follow the [Wikitech guidelines](https://wikitech.wikimedia.org/wiki/Help:Toolforge/Web/Python).
 
 ```
 cd ~/Documents # or whatever dir you prefer
@@ -101,7 +122,7 @@ Sometimes this needs to be run:
 python manage.py migrate
 ```
 
-If doing the migration on ToolForge, first run this:
+If doing the migration on Toolforge, first run this:
 
 ```
 webservice --backend=kubernetes python3.7 shell
