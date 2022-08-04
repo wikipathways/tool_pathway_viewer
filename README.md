@@ -1,5 +1,12 @@
 # `tool_pathway_viewer`
 
+Thise code can be used to create custom, interactive pathway visualizations which can be integrated into websites by means of our PathwayWidget (http://www.wikipathways.org/index.php/PathwayWidget). By embedding a short HTML code snippet, a specified pathway will be displayed in an interactive pathway viewer from WikiPathways, allowing pan and zoom, search and annotation panel popups. The PathwayWidget syntax also supports specifying a list of pathway elements and a corresponding list of colors to highlight, for example, specific genes and color them based on data values or any other criteria relevant to the site. This highlighting is supported for Entrez Gene (NCBIGene), Ensembl, HGNC, Wikidata, ChEBI and HMDB identifiers.
+
+The Pathway Widget has been described in:
+**WikiPathways: capturing the full diversity of pathway knowledge** 
+Martina Kutmon, Anders Riutta, ..., Chris T. Evelo, Alexander R. Pico
+Nucleic Acids Research, Volume 44, Issue D1, 4 January 2016, Pages D488–D494, https://doi.org/10.1093/nar/gkv1024
+
 ## Install
 
 ### For Development
