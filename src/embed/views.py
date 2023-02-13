@@ -77,4 +77,4 @@ def embed(request, wpid):
     )
 
 def help(request):
-    return redirect('https://new.wikipathways.org/help.html#widget')
+    return redirect('https://wikipathways.org/help.html#widget')
