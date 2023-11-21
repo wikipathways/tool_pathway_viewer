@@ -9,9 +9,9 @@ from urllib.parse import unquote, urlencode
 import webcolors
 
 
-logger = logging.Logger('catch_all')
+logger = logging.Logger("catch_all")
 
-#if settings.DEBUG:
+# if settings.DEBUG:
 #    print("debugging mode...")
 
 CSS3_NAMES_TO_HEX = webcolors.CSS3_NAMES_TO_HEX
@@ -34,20 +34,23 @@ def simolecule(request):
     svg = r.text
     return HttpResponse(svg)
 
+
 def index_and_old_toolforge_url(request):
-    wpid = request.GET.get('id', '')
+    wpid = request.GET.get("id", "")
 
     if not wpid:
         # show the help page
-        return redirect('/embed/')
+        return redirect("/embed/")
 
     if not WPRE.match(wpid):
-        return HttpResponse("<html><body><p>Invalid id - must be of format WP554</p></body></html>")
+        return HttpResponse(
+            "<html><body><p>Invalid id - must be of format WP554</p></body></html>"
+        )
 
     params_except_id = request.GET.copy()
     # remove 'id' param
     try:
-        del params_except_id['id']
+        del params_except_id["id"]
     except KeyError:
         pass
 
@@ -55,18 +58,22 @@ def index_and_old_toolforge_url(request):
     if params_str:
         params_str = "?" + params_str
 
-    return redirect('/embed/' + wpid + params_str)
+    return redirect("/embed/" + wpid + params_str)
 
 
 def old_pathway_widget_php(request):
-    wpid = request.GET.get('id')
+    wpid = request.GET.get("id")
     if not wpid:
         # normal index page
-        return HttpResponse("<html><body><p>Please specify an WikiPathways ID like /embed/WP554</p></body></html>")
+        return HttpResponse(
+            "<html><body><p>Please specify an WikiPathways ID like /embed/WP554</p></body></html>"
+        )
 
     if not WPRE.match(wpid):
         # a WikiPathways ID was provided, but it's in the wrong format
-        return HttpResponse("<html><body><p>Invalid id - must be of format WP554</p></body></html>")
+        return HttpResponse(
+            "<html><body><p>Invalid id - must be of format WP554</p></body></html>"
+        )
 
     ##################################################
     # translate from old widget highlight color format
@@ -100,11 +107,13 @@ def old_pathway_widget_php(request):
                 validated_color = webcolors.name_to_hex(raw_color)
             else:
                 # if prefix '#' is present, remove it for consistency. We'll add it back later.
-                if raw_color[0] == '#':
+                if raw_color[0] == "#":
                     raw_color = raw_color[1:]
 
                 # valid lengths for color hex codes for the old widget were 3 or 6
-                if (len(raw_color) in [3, 6]) and (HEXADECIMAL_RE.fullmatch(raw_color) is not None):
+                if (len(raw_color) in [3, 6]) and (
+                    HEXADECIMAL_RE.fullmatch(raw_color) is not None
+                ):
                     validated_color = webcolors.normalize_hex("#" + raw_color)
 
             if validated_color:
@@ -118,15 +127,17 @@ def old_pathway_widget_php(request):
                 colors.append(color)
                 targets_by_color[color] = []
             else:
-                logger.warn("redirect/views.py: unable to parse highlight color: " + raw_color)
+                logger.warn(
+                    "redirect/views.py: unable to parse highlight color: " + raw_color
+                )
 
         targets = []
-        for target in (request.GET.getlist("xref") + request.GET.getlist("xref[]")):
+        for target in request.GET.getlist("xref") + request.GET.getlist("xref[]"):
             parts = target.split(",")
             identifier = parts[0]
             datasource = unquote(parts[1]).replace(" ", "_")
             targets.append(datasource + "_" + identifier)
-        for target in (request.GET.getlist("label") + request.GET.getlist("label[]")):
+        for target in request.GET.getlist("label") + request.GET.getlist("label[]"):
             targets.append(target)
 
         color_count = len(colors)
@@ -156,4 +167,4 @@ def old_pathway_widget_php(request):
     if params:
         params_str = "?" + urlencode(params)
 
-    return redirect('/embed/' + wpid + params_str)
+    return redirect("/embed/" + wpid + params_str)
