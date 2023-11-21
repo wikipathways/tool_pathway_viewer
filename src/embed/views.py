@@ -22,6 +22,13 @@ HEXADECIMAL_RE = re.compile(r"^[0-9a-fA-F]+$")
 
 
 def generate_gradient_svg(id, colors):
+    """
+    Generates an SVG linear gradient from a list of colors. Adapted from https://stackoverflow.com/questions/29335354/filling-an-svg-path-with-multiple-colors.
+
+    Parameters:
+    id (str): the id of the gradient
+    colors (list): a list of colors in hex format, e.g., ['#FF0000', '#00FF00', '#0000FF']
+    """
     text = f'<linearGradient id="{id}" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="{colors[0]}" stop-opacity=1 />'
     for i in range(1, len(colors)):
         text += f'<stop offset="{(i)*100/(len(colors))}%" stop-color="{colors[i - 1]}" stop-opacity=1 />'
@@ -61,6 +68,7 @@ def embed(request, wpid):
 
     svg_data = svg_res.text
     highlight_style = ""
+    selector_color_dict: dict[str, list[str]] = {}
     for key, value in request.GET.items():
         validated_color = ""
         if key in CSS3_NAMES_TO_HEX:
@@ -84,27 +92,36 @@ def embed(request, wpid):
                 selector = NON_ALPHANUMERIC_DASH_CHAR_RE.sub("_", raw_selector)
 
                 if svg_data.find(selector) > -1:
-                    highlight_style += (
-                        "#"
-                        + selector
-                        + " .Icon, ."
-                        + selector
-                        + ' .Icon, [name="'
-                        + selector
-                        + '"] .Icon { fill: '
-                        + validated_color
-                        + ";}\n"
-                    )
-                    highlight_style += (
-                        "#"
-                        + selector
-                        + ".Edge path, ."
-                        + selector
-                        + ".Edge path { stroke: "
-                        + validated_color
-                        + ";}\n"
-                    )
-
+                    if selector not in selector_color_dict:
+                        selector_color_dict[selector] = [validated_color]
+                    elif validated_color not in selector_color_dict[selector]:
+                        selector_color_dict[selector].append(validated_color)
+    custom_defs = ""
+    for selector, colors in selector_color_dict.items():
+        gradient_id = selector + "_gradient"
+        highlight_style += (
+            "#"
+            + selector
+            + " .Icon, ."
+            + selector
+            + ' .Icon, [name="'
+            + selector
+            + '"] .Icon { fill: url(#'
+            + gradient_id
+            + ");}\n"
+        )
+        highlight_style += (
+            "#"
+            + selector
+            + ".Edge path, ."
+            + selector
+            + ".Edge path { stroke: url(#"
+            + gradient_id
+            + ");}\n"
+        )
+        custom_defs += generate_gradient_svg(gradient_id, colors)
+    fracture = svg_data.split("<defs>")
+    svg_data = fracture[0] + "<defs>" + custom_defs + fracture[1]
     return render(
         request,
         "embed.html",
