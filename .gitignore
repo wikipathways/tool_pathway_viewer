@@ -12,3 +12,7 @@ media
 public/
 venv/
 static/
+.python-version
+pyproject.toml
+requirements.lock
+requirements-dev.lock
