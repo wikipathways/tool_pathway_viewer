@@ -97,8 +97,10 @@ def embed(request, wpid):
                     elif validated_color not in selector_color_dict[selector]:
                         selector_color_dict[selector].append(validated_color)
     custom_defs = ""
+    counter = 0
     for selector, colors in selector_color_dict.items():
-        gradient_id = selector + "_gradient"
+        gradient_id = f"gradient_{counter}"
+        counter += 1
         highlight_style += (
             "#"
             + selector
