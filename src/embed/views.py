@@ -98,9 +98,15 @@ def embed(request, wpid):
                         selector_color_dict[selector].append(validated_color)
     custom_defs = ""
     counter = 0
+    gradient_dict = {}
     for selector, colors in selector_color_dict.items():
-        gradient_id = f"gradient_{counter}"
-        counter += 1
+        if gradient_dict.get(tuple(colors)):
+            gradient_id = gradient_dict[tuple(colors)]
+        else:
+            gradient_id = f"gradient_{counter}"
+            counter += 1
+            custom_defs += generate_gradient_svg(gradient_id, colors)
+            gradient_dict[tuple(colors)] = gradient_id
         highlight_style += (
             "#"
             + selector
@@ -121,7 +127,6 @@ def embed(request, wpid):
             + gradient_id
             + ");}\n"
         )
-        custom_defs += generate_gradient_svg(gradient_id, colors)
     fracture = svg_data.split("<defs>")
     svg_data = fracture[0] + "<defs>" + custom_defs + fracture[1]
     return render(
