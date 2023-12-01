@@ -32,13 +32,13 @@ from redirect import views
 
 urlpatterns = [
     # views.index_and_old_toolforge_url in src/redirect/views.py
-    path('', views.index_and_old_toolforge_url),
-    path('PathwayWidget.php', views.old_pathway_widget_php),
-    path('wpi/PathwayWidget.php', views.old_pathway_widget_php),
+    path("", views.index_and_old_toolforge_url),
+    path("PathwayWidget.php", views.old_pathway_widget_php),
+    path("wpi/PathwayWidget.php", views.old_pathway_widget_php),
     # embed.urls in src/embed/urls.py
-    path('embed/', include('embed.urls')),
+    path("embed/", include("embed.urls")),
     # views.simolecule in src/redirect/views.py
-    path('simolecule/', views.simolecule, name='simolecule'),
+    path("simolecule/", views.simolecule, name="simolecule"),
     # not really using admin
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
 ]

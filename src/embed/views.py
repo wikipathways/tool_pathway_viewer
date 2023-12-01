@@ -10,49 +10,72 @@ import requests
 import webcolors
 
 
-#if settings.DEBUG:
+# if settings.DEBUG:
 #    print("debugging mode...")
 
 CSS3_NAMES_TO_HEX = webcolors.CSS3_NAMES_TO_HEX
-THEME_FILENAME_PARTS_BY_THEME = dict(plain='', dark='.dark')
+THEME_FILENAME_PARTS_BY_THEME = dict(plain="", dark=".dark")
 
 NON_ALPHANUMERIC_DASH_CHAR_RE = re.compile(r"[^A-Za-z0-9\-]")
 WPRE = re.compile(r"^WP\d+$")
 HEXADECIMAL_RE = re.compile(r"^[0-9a-fA-F]+$")
 
 
+def generate_gradient_svg(id, colors):
+    """
+    Generates an SVG linear gradient from a list of colors. Adapted from https://stackoverflow.com/questions/29335354/filling-an-svg-path-with-multiple-colors.
+
+    Parameters:
+    id (str): the id of the gradient
+    colors (list): a list of colors in hex format, e.g., ['#FF0000', '#00FF00', '#0000FF']
+    """
+    text = f'<linearGradient id="{id}" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="{colors[0]}" stop-opacity=1 />'
+    for i in range(1, len(colors)):
+        text += f'<stop offset="{(i)*100/(len(colors))}%" stop-color="{colors[i - 1]}" stop-opacity=1 />'
+        text += f'<stop offset="{(i)*100/(len(colors))}%" stop-color="{colors[i]}" stop-opacity=1 />'
+    text += f'<stop offset="100%" stop-color="{colors[-1]}" stop-opacity=1 /></linearGradient>'
+    return text
+
+
 # decorator needed to allow external iframes to use it
 @xframe_options_exempt
 def embed(request, wpid):
-    theme_filename_part = ''
-    theme = request.GET.get('theme', 'plain')
+    theme_filename_part = ""
+    theme = request.GET.get("theme", "plain")
     if theme in THEME_FILENAME_PARTS_BY_THEME:
         theme_filename_part = THEME_FILENAME_PARTS_BY_THEME[theme]
     else:
-        theme_filename_part = ''
+        theme_filename_part = ""
 
     if not wpid:
         # the path in ../tool_pathway_viewer/urls.py should make it impossible to get here
-        return HttpResponse('<html><body><p>WikiPathways ID required. Example: "/embed/WP554"</p></body></html>')
+        return HttpResponse(
+            '<html><body><p>WikiPathways ID required. Example: "/embed/WP554"</p></body></html>'
+        )
 
     if not WPRE.fullmatch(wpid):
-        return HttpResponse('<html><body><p>Invalid WikiPathways ID. Must must be of format WP + number, e.g., WP554</p></body></html>')
-      
+        return HttpResponse(
+            "<html><body><p>Invalid WikiPathways ID. Must must be of format WP + number, e.g., WP554</p></body></html>"
+        )
+
     # TODO: should we convert the old revisions to git hashes and then support the "rev" query param?
-    svg_url = f'https://raw.githubusercontent.com/wikipathways/wikipathways-assets/main/pathways/{wpid}/{wpid}.svg'
+    svg_url = f"https://raw.githubusercontent.com/wikipathways/wikipathways-assets/main/pathways/{wpid}/{wpid}.svg"
     svg_res = requests.get(svg_url)
     if svg_res.status_code != 200:
-        return HttpResponse(f'<html><body><p>No SVG available for {svg_url}</p></body></html>')
+        return HttpResponse(
+            f"<html><body><p>No SVG available for {svg_url}</p></body></html>"
+        )
 
     svg_data = svg_res.text
-    highlight_style = ''
+    highlight_style = ""
+    selector_color_dict: dict[str, list[str]] = {}
     for key, value in request.GET.items():
         validated_color = ""
         if key in CSS3_NAMES_TO_HEX:
             validated_color = key
         else:
             # if prefix '#' is present, remove it for consistency. We'll add it back later.
-            if key[0] == '#':
+            if key[0] == "#":
                 key = key[1:]
 
             # valid lengths for color hex codes: 3, 6 or 8
@@ -69,12 +92,49 @@ def embed(request, wpid):
                 selector = NON_ALPHANUMERIC_DASH_CHAR_RE.sub("_", raw_selector)
 
                 if svg_data.find(selector) > -1:
-                    highlight_style += ('#' + selector + ' .Icon, .' + selector + ' .Icon, [name="' + selector + '"] .Icon { fill: ' + validated_color + ';}\n')
-                    highlight_style += ('#' + selector + '.Edge path, .' + selector + '.Edge path { stroke: ' + validated_color + ';}\n')
-
+                    if selector not in selector_color_dict:
+                        selector_color_dict[selector] = [validated_color]
+                    elif validated_color not in selector_color_dict[selector]:
+                        selector_color_dict[selector].append(validated_color)
+    custom_defs = ""
+    counter = 0
+    gradient_dict = {}
+    for selector, colors in selector_color_dict.items():
+        if gradient_dict.get(tuple(colors)):
+            gradient_id = gradient_dict[tuple(colors)]
+        else:
+            gradient_id = f"gradient_{counter}"
+            counter += 1
+            custom_defs += generate_gradient_svg(gradient_id, colors)
+            gradient_dict[tuple(colors)] = gradient_id
+        highlight_style += (
+            "#"
+            + selector
+            + " .Icon, ."
+            + selector
+            + ' .Icon, [name="'
+            + selector
+            + '"] .Icon { fill: url(#'
+            + gradient_id
+            + ");}\n"
+        )
+        highlight_style += (
+            "#"
+            + selector
+            + ".Edge path, ."
+            + selector
+            + ".Edge path { stroke: url(#"
+            + gradient_id
+            + ");}\n"
+        )
+    fracture = svg_data.split("<defs>")
+    svg_data = fracture[0] + "<defs>" + custom_defs + fracture[1]
     return render(
-            request, "embed.html", {"highlight_style": highlight_style, "svg_data": svg_data}
+        request,
+        "embed.html",
+        {"highlight_style": highlight_style, "svg_data": svg_data},
     )
 
+
 def help(request):
-    return redirect('https://wikipathways.org/help.html#widget')
+    return redirect("https://wikipathways.org/help.html#widget")
